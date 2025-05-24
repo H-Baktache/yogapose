@@ -3,6 +3,20 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "routes": [
+    { 
+      "src": "/(.*)\\.js$",
+      "dest": "/$1.js",
+      "headers": {
+        "Content-Type": "application/javascript; charset=utf-8"
+      }
+    },
+    { 
+      "src": "/(.*)\\.mjs$", 
+      "dest": "/$1.mjs",
+      "headers": {
+        "Content-Type": "application/javascript; charset=utf-8"
+      }
+    },
     { "src": "/(.*)", "dest": "/" }
   ],
   "github": {
