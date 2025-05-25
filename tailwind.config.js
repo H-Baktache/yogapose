@@ -27,6 +27,7 @@ module.exports = {
         'spin-slow': 'spin 3s linear infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'blob': 'blob 7s infinite',
+        'fadeIn': 'fadeIn 0.5s ease-out forwards',
       },
       keyframes: {
         blob: {
@@ -41,6 +42,16 @@ module.exports = {
           },
           '100%': {
             transform: 'translate(0px, 0px) scale(1)',
+          },
+        },
+        fadeIn: {
+          'from': {
+            opacity: '0',
+            transform: 'translateY(10px)',
+          },
+          'to': {
+            opacity: '1',
+            transform: 'translateY(0)',
           },
         },
       },
