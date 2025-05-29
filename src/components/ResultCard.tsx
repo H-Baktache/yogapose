@@ -8,18 +8,18 @@ interface ResultCardProps {
 const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
   const [activeTab, setActiveTab] = useState<'benefits' | 'instructions'>('benefits');
   
-  // Déterminer la couleur basée sur la confiance
+  // Determine color based on confidence
   const getConfidenceColor = () => {
     if (result.confidence >= 0.8) return 'bg-green-500';
     if (result.confidence >= 0.5) return 'bg-yellow-500';
     return 'bg-red-500';
   };
   
-  // Formater le pourcentage de confiance
+  // Format confidence percentage
   const confidencePercent = Math.round(result.confidence * 100);
   
-  // Vérifier si aucune pose n'a été détectée
-  const noPostureDetected = result.poseName === 'Aucune posture de yoga détectée';
+  // Check if no pose was detected
+  const noPostureDetected = result.poseName === 'No yoga pose detected';
   
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden animate-fadeIn border border-gray-200">
@@ -37,7 +37,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
         
         <div className="mb-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-medium text-gray-700">Confiance</span>
+            <span className="text-sm font-medium text-gray-700">Confidence</span>
             <span className={`text-sm font-medium ${
               result.confidence >= 0.8 ? 'text-green-700' : 
               result.confidence >= 0.5 ? 'text-yellow-700' : 'text-red-700'
@@ -56,10 +56,10 @@ const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
         {!noPostureDetected && (
           <div className="mb-4">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-medium text-gray-700">Niveau</span>
+              <span className="text-sm font-medium text-gray-700">Level</span>
               <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                result.level.includes('Débutant') ? 'bg-green-100 text-green-800' : 
-                result.level.includes('Intermédiaire') ? 'bg-yellow-100 text-yellow-800' : 
+                result.level.includes('Beginner') ? 'bg-green-100 text-green-800' : 
+                result.level.includes('Intermediate') ? 'bg-yellow-100 text-yellow-800' : 
                 'bg-red-100 text-red-800'
               }`}>
                 {result.level}
@@ -77,14 +77,14 @@ const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
               alt={result.poseName} 
               className="w-full h-auto object-cover"
               onError={(e) => {
-                // Remplacer par une image par défaut en cas d'erreur de chargement
-                e.currentTarget.src = "https://via.placeholder.com/600x400?text=Image+non+disponible";
+                // Replace with default image in case of loading error
+                e.currentTarget.src = "https://via.placeholder.com/600x400?text=Image+not+available";
               }}
             />
           </div>
         )}
         
-        {/* Onglets */}
+        {/* Tabs */}
         {!noPostureDetected && (
           <div className="border-b border-gray-200">
             <div className="flex -mb-px">
@@ -96,7 +96,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
                 }`}
                 onClick={() => setActiveTab('benefits')}
               >
-                Bienfaits
+                Benefits
               </button>
               <button
                 className={`mr-1 py-2 px-4 text-center border-b-2 font-medium text-sm ${
@@ -113,12 +113,12 @@ const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
         )}
       </div>
       
-      {/* Contenu des onglets */}
+      {/* Tab content */}
       <div className="p-6">
         {activeTab === 'benefits' && (
           <div>
             <h4 className="font-semibold text-gray-800 mb-3">
-              {noPostureDetected ? 'Suggestions' : 'Bienfaits'}
+              {noPostureDetected ? 'Suggestions' : 'Benefits'}
             </h4>
             <ul className="space-y-2">
               {result.benefits.length > 0 ? (
@@ -131,7 +131,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
                   </li>
                 ))
               ) : (
-                <li className="text-gray-500 italic">Aucune information disponible</li>
+                <li className="text-gray-500 italic">No information available</li>
               )}
             </ul>
           </div>
@@ -140,7 +140,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
         {activeTab === 'instructions' && (
           <div>
             <h4 className="font-semibold text-gray-800 mb-3">
-              {noPostureDetected ? 'Conseils pour améliorer la détection' : 'Instructions'}
+              {noPostureDetected ? 'Tips for better detection' : 'Instructions'}
             </h4>
             <ol className="space-y-2 list-decimal list-inside">
               {result.instructions.map((instruction, index) => (
