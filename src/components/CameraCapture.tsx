@@ -22,14 +22,14 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
   const [confidence, setConfidence] = useState<number>(0);
   const [detectedPose, setDetectedPose] = useState<string | null>(null);
   
-  // Configuration de la caméra
+  // Camera configuration
   const videoConstraints = {
     facingMode: facingMode,
     width: { ideal: 1280 },
     height: { ideal: 720 }
   };
 
-  // Récupérer la liste des caméras disponibles
+  // Get the list of available cameras
   const handleDevices = useCallback((mediaDevices: MediaDeviceInfo[]) => {
     const videoDevices = mediaDevices.filter(({ kind }) => kind === "videoinput");
     setDevices(videoDevices);
@@ -39,12 +39,12 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
     navigator.mediaDevices.enumerateDevices()
       .then(handleDevices)
       .catch(error => {
-        console.error("Erreur lors de l'énumération des périphériques:", error);
-        setError("Impossible d'accéder aux périphériques de caméra");
+        console.error("Error enumerating devices:", error);
+        setError("Unable to access camera devices");
       });
   }, [handleDevices]);
 
-  // Nettoyer l'intervalle de détection automatique lors du démontage du composant
+  // Clean up auto detection interval when component unmounts
   useEffect(() => {
     return () => {
       if (detectionInterval) {
@@ -53,7 +53,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
     };
   }, [detectionInterval]);
 
-  // Démarrer le compte à rebours avant la capture
+  // Start countdown before capture
   const startCountdown = () => {
     setCountdown(3);
     const timer = setInterval(() => {
@@ -68,7 +68,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
     }, 1000);
   };
 
-  // Capturer l'image de la caméra
+  // Capture image from camera
   const captureImage = async () => {
     setCapturing(true);
     try {
@@ -76,7 +76,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
         const imageSrc = webcamRef.current.getScreenshot();
         if (imageSrc) {
           setAnalyzing(true);
-          // Analyser l'image avec l'IA
+          // Analyze the image with AI
           const result = await classifyYogaPose(imageSrc);
           
           if (!autoDetectMode) {
@@ -86,8 +86,8 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
             setConfidence(result.confidence);
             setDetectedPose(result.poseName);
             
-            // Si la confiance est suffisamment élevée, envoyer le résultat
-            if (result.confidence > 0.7 && result.poseName !== 'Aucune posture de yoga détectée') {
+            // If confidence is high enough, send the result
+            if (result.confidence > 0.7 && result.poseName !== 'No yoga pose detected') {
               onCapture(result, imageSrc);
               setAutoDetectMode(false);
               if (detectionInterval) {
@@ -102,47 +102,47 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
         }
       }
     } catch (err) {
-      console.error("Erreur lors de la capture:", err);
-      setError("Erreur lors de l'analyse de la posture. Veuillez réessayer.");
+      console.error("Error during capture:", err);
+      setError("Error analyzing the pose. Please try again.");
       setCapturing(false);
       setAnalyzing(false);
     }
   };
 
-  // Changer de caméra (avant/arrière)
+  // Switch camera (front/back)
   const switchCamera = () => {
     setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
   };
 
-  // Événement déclenché lorsque la caméra est prête
+  // Event triggered when camera is ready
   const handleUserMedia = () => {
     setCameraReady(true);
   };
 
-  // Événement déclenché en cas d'erreur de la caméra
+  // Event triggered when camera error occurs
   const handleUserMediaError = (error: string | DOMException) => {
-    console.error("Erreur d'accès à la caméra:", error);
-    setError("Impossible d'accéder à la caméra. Veuillez vérifier les permissions.");
+    console.error("Error accessing camera:", error);
+    setError("Unable to access camera. Please check permissions.");
   };
   
-  // Activer/désactiver le mode de détection automatique
+  // Enable/disable auto detection mode
   const toggleAutoDetectMode = () => {
     if (!autoDetectMode) {
-      // Activer le mode de détection automatique
+      // Enable auto detection mode
       setAutoDetectMode(true);
       setConfidence(0);
       setDetectedPose(null);
       
-      // Démarrer la détection périodique
+      // Start periodic detection
       const intervalId = window.setInterval(() => {
         if (!capturing && !analyzing && cameraReady) {
           captureImage();
         }
-      }, 2000); // Toutes les 2 secondes
+      }, 2000); // Every 2 seconds
       
       setDetectionInterval(intervalId);
     } else {
-      // Désactiver le mode de détection automatique
+      // Disable auto detection mode
       setAutoDetectMode(false);
       if (detectionInterval) {
         clearInterval(detectionInterval);
@@ -156,7 +156,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
       <div className="bg-white rounded-xl overflow-hidden shadow-2xl max-w-xl w-full relative animate-fadeIn">
         <div className="absolute top-0 left-0 right-0 z-10 flex justify-between items-center bg-gradient-to-b from-black to-transparent p-4">
           <h3 className="text-white font-bold text-lg">
-            {autoDetectMode ? 'Détection automatique' : 'Détection en direct'}
+            {autoDetectMode ? 'Automatic Detection' : 'Live Detection'}
           </h3>
           <button 
             onClick={onClose}
@@ -179,7 +179,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
             className="w-full h-auto"
           />
           
-          {/* Overlay d'information de détection automatique */}
+          {/* Auto detection information overlay */}
           {autoDetectMode && (
             <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center p-4">
               {analyzing ? (
@@ -188,7 +188,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  <span className="text-lg font-medium">Analyse en cours...</span>
+                  <span className="text-lg font-medium">Analyzing...</span>
                 </div>
               ) : (
                 <>
@@ -205,18 +205,18 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
                             style={{ width: `${confidence * 100}%` }}
                           ></div>
                         </div>
-                        <span className="text-xs text-gray-600">{Math.round(confidence * 100)}% de confiance</span>
+                        <span className="text-xs text-gray-600">{Math.round(confidence * 100)}% confidence</span>
                       </div>
                       {confidence > 0.7 && (
                         <div className="text-green-600 font-medium text-sm animate-pulse mt-2">
-                          Excellente posture! Enregistrement...
+                          Excellent pose! Saving...
                         </div>
                       )}
                     </div>
                   ) : (
                     <div className="text-white text-center">
-                      <div className="text-xl font-medium mb-2">Prenez votre posture de yoga</div>
-                      <div className="text-sm opacity-80">Maintenez la posture et restez dans le cadre</div>
+                      <div className="text-xl font-medium mb-2">Take your yoga pose</div>
+                      <div className="text-sm opacity-80">Hold the pose and stay in frame</div>
                     </div>
                   )}
                 </>
@@ -224,7 +224,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
             </div>
           )}
           
-          {/* Overlay pour les actions */}
+          {/* Actions overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
             <div className="flex justify-between items-center">
               <button
@@ -249,7 +249,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Analyse...
+                      Analyzing...
                     </>
                   ) : countdown !== null ? (
                     `${countdown}`
@@ -259,7 +259,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       </svg>
-                      Capturer
+                      Capture
                     </>
                   )}
                 </button>
@@ -272,7 +272,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                   </svg>
-                  Arrêter
+                  Stop
                 </button>
               )}
               
@@ -292,7 +292,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
             </div>
           </div>
           
-          {/* Compte à rebours */}
+          {/* Countdown */}
           {countdown !== null && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <div className="text-white text-6xl font-bold animate-pulse">{countdown}</div>
@@ -300,20 +300,20 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose }) => 
           )}
         </div>
         
-        {/* Messages d'information mode automatique */}
+        {/* Automatic mode information messages */}
         {!autoDetectMode && (
           <div className="bg-indigo-50 text-indigo-700 p-4 border-t border-indigo-100">
             <div className="flex items-center mb-2">
               <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
-              <span className="font-medium">Astuce: Mode automatique</span>
+              <span className="font-medium">Tip: Auto Mode</span>
             </div>
-            <p className="text-sm ml-7">Activez le mode automatique (icône de bouclier) pour que l'application détecte votre posture sans avoir à appuyer sur un bouton.</p>
+            <p className="text-sm ml-7">Enable auto mode (shield icon) for the app to detect your pose without having to press a button.</p>
           </div>
         )}
         
-        {/* Messages d'erreur */}
+        {/* Error messages */}
         {error && (
           <div className="bg-red-50 text-red-700 p-4 border-t border-red-200">
             <div className="flex items-center">

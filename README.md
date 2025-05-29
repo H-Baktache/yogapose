@@ -1,67 +1,103 @@
-# Yoga Pose Classifier
+# YOGASNAP - Intelligent Yoga Pose Classification
 
-Application web qui utilise l'intelligence artificielle (Google Gemini) pour classifier automatiquement les postures de yoga.
+YOGASNAP is an intelligent web application that uses machine learning to classify yoga poses in real-time.
 
-## Caractéristiques
+## Authentication System
 
-- Interface utilisateur intuitive et moderne avec React et Tailwind CSS
-- Glisser-déposer d'images avec prévisualisation
-- Capture de postures via la caméra avec mode automatique
-- Classification des postures de yoga en temps réel grâce à l'API Gemini
-- Historique des postures analysées avec possibilité de recharger
-- Affichage détaillé des résultats incluant:
-  - Nom de la posture
-  - Niveau de confiance de la classification
-  - Description de la posture
-  - Bienfaits de la posture
-  - Niveau de difficulté
-  - Conseils pour réaliser correctement la posture
+The application includes a complete authentication system with the following features:
 
-## Capture par caméra
+- **User Login**: Secure email/password authentication
+- **User Registration**: New users can create an account
+- **Session Management**: Maintains user sessions across page refreshes
+- **Protected Routes**: Main application content is only accessible to authenticated users
 
-L'application propose deux modes de capture:
-- **Capture manuelle**: Prenez une photo de votre posture quand vous êtes prêt
-- **Détection automatique**: Le système analyse automatiquement le flux vidéo et capture les postures détectées
+### Technical Implementation
 
-## Configuration
+The authentication system is built using:
 
-### Prérequis
+- **Supabase Auth**: Backend authentication service
+- **React Context API**: Global state management for user authentication status
+- **TypeScript**: For type safety and better developer experience
+
+### Authentication Flow
+
+1. **Initial Load**: The app checks for an existing session
+2. **Login/Registration**: Users can log in with existing credentials or create a new account
+3. **Protected Content**: Once authenticated, users gain access to the yoga pose classification features
+4. **Sign Out**: Users can log out, which invalidates their session
+
+### Setting Up Supabase
+
+To set up authentication with your own Supabase instance:
+
+1. Create a Supabase project at [https://supabase.com/](https://supabase.com/)
+2. Replace the placeholder values in `src/services/supabaseClient.ts` with your actual Supabase URL and anon key
+3. Enable Email auth in the Supabase Authentication settings
+
+## Running the Application
+
+```bash
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+Visit `http://localhost:5173` in your browser to see the application.
+
+## Features
+
+- **Real-time Yoga Pose Classification**: Analyze and classify yoga poses in real-time
+- **Pose History**: Track your practice history
+- **Pose Sequences**: Create and follow yoga sequences
+- **Responsive Design**: Works on desktop and mobile devices
+
+## Camera Capture
+
+The application offers two capture modes:
+- **Manual Capture**: Take a photo of your pose when you're ready
+- **Automatic Detection**: The system automatically analyzes the video stream and captures detected poses
+
+## Setup
+
+### Prerequisites
 
 - Node.js 18+
-- Une clé API Gemini (https://ai.google.dev/)
+- A Gemini API key (https://ai.google.dev/)
 
 ### Installation
 
-1. Clonez ce dépôt
-2. Installez les dépendances:
+1. Clone this repository
+2. Install dependencies:
    ```
    cd yoga-classifier
    npm install
    ```
-3. Créez un fichier `.env` à la racine du projet avec votre clé API:
+3. Create a `.env` file at the root of the project with your API key:
    ```
-   VITE_GEMINI_API_KEY=votre_clé_api_ici
+   VITE_GEMINI_API_KEY=your_api_key_here
    ```
 
-### Démarrage
+### Starting the App
 
-Pour lancer l'application en mode développement:
+To launch the application in development mode:
 
 ```
 npm run dev
 ```
 
-L'application sera disponible à l'adresse [http://localhost:3000](http://localhost:3000).
+The application will be available at [http://localhost:3000](http://localhost:3000).
 
-## Comment ça marche
+## How It Works
 
-1. L'utilisateur télécharge une image ou prend une photo de posture de yoga
-2. L'application envoie l'image à l'API Google Gemini
-3. L'intelligence artificielle identifie la posture et fournit des informations détaillées
-4. L'application affiche les résultats de manière visuellement attrayante
-5. L'historique des analyses est sauvegardé localement pour référence future
+1. The user uploads an image or takes a photo of a yoga pose
+2. The application sends the image to the Google Gemini API
+3. The artificial intelligence identifies the pose and provides detailed information
+4. The application displays the results in a visually appealing way
+5. The analysis history is saved locally for future reference
 
-## Technologies utilisées
+## Technologies Used
 
 - React
 - TypeScript
@@ -70,11 +106,11 @@ L'application sera disponible à l'adresse [http://localhost:3000](http://localh
 - Google Gemini API
 - React Dropzone
 - React Webcam
-- LocalStorage pour l'historique
+- LocalStorage for history
 
-## Déploiement
+## Deployment
 
-Cette application est configurée pour un déploiement facile sur Vercel.
+This application is configured for easy deployment on Vercel.
 
 ## License
 
